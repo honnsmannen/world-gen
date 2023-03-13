@@ -55,18 +55,44 @@ func _process(delta: float) -> void:
 
 
 
-
-
+#shit ballade, dden outpaceade spelaren, bad chatgpt om bättre kod, vilket den gav :p
+"""
 func world_gen(width,height) -> void:
-	filurens_position = filuren.global_position - Vector2(320,320)
+	filurens_position = filuren.global_position# - Vector2(320,320)
 
-	for x in range(width + (int(round(filurens_position.x))/32), (int(round(filurens_position.x))/32) - width , -1 ):
-		for y in range(height + (int(round(filurens_position.y))/32), (int(round(filurens_position.y))/32) - height , -1):
+	for x in range(width/2 + (int(round(filurens_position.x))/32), (int(round(filurens_position.x))/32) - width/2 , -1 ):
+		for y in range(height/2 + (int(round(filurens_position.y))/32), (int(round(filurens_position.y))/32) - height/2 , -1):
 			if int(round(noise.get_noise_2d(x + (int(round(filurens_position.x))/32) , y + (int(round(filurens_position.y))/32)))) < 0:
 				compenserat_value = int(round(noise.get_noise_2d(x + (int(round(filurens_position.x))/32), y + (int(round(filurens_position.y))/32)))) * -1
 			else:
-				compenserat_value = int(round(noise.get_noise_2d(x + (int(round(filurens_position.x + 320))/32), y + (int(round(filurens_position.y + 320))/32))))
+				compenserat_value = int(round(noise.get_noise_2d(x + (int(round(filurens_position.x))/32), y + (int(round(filurens_position.y))/32))))
 			
 			$TileMap.set_cell(x+(int(round(filurens_position.x))/32), y+(int(round(filurens_position.y))/32), compenserat_value)
+"""
+"""			I
+			I
+chatgpt kod V
+"""
 
+func world_gen(width: int, height: int) -> void:
+	var center = filuren.global_position
+	var start_x = int(center.x / 32) - width/2
+	var start_y = int(center.y / 32) - height/2
+	for x in range(start_x, start_x + width):
+		for y in range(start_y, start_y + height):
+			
+			# Generate world data at (x, y)
+			var noise_x = x
+			var noise_y = y
+			var noise_value = noise.get_noise_2d(noise_x, noise_y)
+			
+			"""
+			den kommande biten skrev jag
+			"""
+			if noise_value < 0:
+				compenserat_value = int(round(noise_value)) * -1
+			else:
+				compenserat_value = int(round(noise_value))
+			
+			$TileMap.set_cell(x, y, int(compenserat_value))
 
