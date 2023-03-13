@@ -10,7 +10,8 @@ var level_navigation_map
 #var tree_offset = Vector2(32,32)
 var tree_pos := Vector2(0,0)
 
-
+var step_for_world_gen_x = 1
+var step_for_world_gen_y = 1
 
 var filurens_position : Vector2
 
@@ -42,12 +43,11 @@ func _ready() -> void:
 	noise.period = 15
 	
 	noise.octaves = 1
-	world_gen(20,20)
+	
 
 func _process(delta: float) -> void:
 	world_gen(20,20)
-	print(int(round(filurens_position.x)))
-	print(int(round(filurens_position.y)))
+
 
 
 
@@ -55,12 +55,28 @@ func _process(delta: float) -> void:
 
 
 func world_gen(width,height) -> void:
-	filurens_position = filuren.global_position
-	for x in range(width):
-		for y in range(height):
-			if int(round(noise.get_noise_2d(x + int(round(filurens_position.x)) , y + int(round(filurens_position.y))))) < 0:
-				compenserat_value = int(round(noise.get_noise_2d(x + int(round(filurens_position.x)) , y + int(round(filurens_position.y)))))
+	filurens_position = filuren.global_position - Vector2(320,320)
+	"""
+	if filuren.global_position.x < 0 and filuren.global_position.y < 0:
+		step_for_world_gen_x = -1
+		step_for_world_gen_y = -1
+	elif filuren.global_position.x < 0 and !filuren.global_position.y < 0:
+		step_for_world_gen_x = -1
+		step_for_world_gen_y = 1
+	elif !filuren.global_position.x < 0 and filuren.global_position.y < 0:
+		step_for_world_gen_x = 1
+		step_for_world_gen_y = -1
+	else:
+		step_for_world_gen_x = 1
+		step_for_world_gen_y = 1
+	"""
+	for x in range(width + (int(round(filurens_position.x))/32), (int(round(filurens_position.x))/32) - width , step_for_world_gen_x):
+		for y in range(height + (int(round(filurens_position.y))/32), (int(round(filurens_position.y))/32) - height , step_for_world_gen_y):
+			if int(round(noise.get_noise_2d(x + (int(round(filurens_position.x))/32) , y + (int(round(filurens_position.y))/32)))) < 0:
+				compenserat_value = int(round(noise.get_noise_2d(x + (int(round(filurens_position.x))/32), y + (int(round(filurens_position.y))/32)))) * -1
+			else:
+				compenserat_value = int(round(noise.get_noise_2d(x + (int(round(filurens_position.x))/32), y + (int(round(filurens_position.y))/32))))
 			
-			$TileMap.set_cell(x+int(round(filurens_position.x)), y+int(round(filurens_position.y)), compenserat_value)
+			$TileMap.set_cell(x+(int(round(filurens_position.x))/32), y+(int(round(filurens_position.y))/32), compenserat_value)
 
 
