@@ -66,28 +66,89 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	
-	if negativt_spann.x < filuren.global_position.x and filuren.global_position.x < positivt_spann.x:
+	$negspann.global_position = negativt_spann
+	$posspann.global_position = positivt_spann
+	"""
+	if negativt_spann.x * 32 < filuren.global_position.x and filuren.global_position.x < positivt_spann.x * 32:
 		pass
-	elif negativt_spann.y < filuren.global_position.y and filuren.global_position.y < positivt_spann.y:
+	elif negativt_spann.y * 32 < filuren.global_position.y and filuren.global_position.y < positivt_spann.y * 32:
 		pass
 	else:
-		if negativt_spann.x > filuren.global_position.x:
+		if negativt_spann.x  * 32>  filuren.global_position.x:
 			posmod_x = posmod_x -1
-			world_gen(32, 32)
-		if positivt_spann.x < filuren.global_position.x:
-			posmod_x = posmod_x + 1
-			world_gen(32, 32)
-		if negativt_spann.y > filuren.global_position.y:
-			posmod_y = posmod_y -1
-			world_gen(32, 32)
-		if positivt_spann.y < filuren.global_position.y:
-			posmod_y = posmod_y + 1
-			world_gen(32, 32)
+			negativt_spann = Vector2(-32+ 32* posmod_x,-32 + 32 * posmod_y)
 	
+			positivt_spann = Vector2(32 +32 * posmod_x,32 + 32  * posmod_y)
+	
+			world_gen(32, 32)
+		else:	
+			pass
+		if positivt_spann.x * 32 < filuren.global_position.x:
+			
+			posmod_x = posmod_x + 1
+			negativt_spann = Vector2(-32+ 32* posmod_x,-32 + 32 * posmod_y)
+	
+			positivt_spann = Vector2(32 +32 * posmod_x,32 + 32  * posmod_y)
+	
+			world_gen(32, 32)
+		else:
+			pass
+			
+		if negativt_spann.y * 32 > filuren.global_position.y:
+			posmod_y = posmod_y -1
+			negativt_spann = Vector2(-32+ 32* posmod_x,-32 + 32 * posmod_y)
+	
+			positivt_spann = Vector2(32 +32 * posmod_x,32 + 32  * posmod_y)
+	
+			world_gen(32, 32)
+		else:	
+			pass
+		if positivt_spann.y * 32 < filuren.global_position.y:
+			posmod_y = posmod_y + 1
+			negativt_spann = Vector2(-32+ 32* posmod_x,-32 + 32 * posmod_y)
+	
+			positivt_spann = Vector2(32 +32 * posmod_x,32 + 32  * posmod_y)
+		
+			world_gen(32, 32)
+		else:
+			pass
+	"""
+	if negativt_spann.x  < filuren.global_position.x and filuren.global_position.x < positivt_spann.x:
+	# Player is within x range, do nothing
+		pass
+	elif negativt_spann.x > filuren.global_position.x:
+		# Player is to the left of the x range
+	  posmod_x -= 1
+	  negativt_spann.x -= 32*32
+	  positivt_spann.x -= 32*32
+	  world_gen(32,32)
+	elif positivt_spann.x  < filuren.global_position.x:
+	   # Player is to the right of the x range
+		posmod_x += 1
+		negativt_spann.x += 32*32
+		positivt_spann.x += 32*32
+		world_gen(32,32)
+
+	if negativt_spann.y < filuren.global_position.y and filuren.global_position.y < positivt_spann.y:
+		
+			  # Player is within y range, do nothing
+		pass
+	elif negativt_spann.y > filuren.global_position.y:
+	  # Player is below the y range
+		posmod_y -= 1
+		negativt_spann.y -= 32*32
+		positivt_spann.y -= 32*32
+		world_gen(32,32)
+	elif positivt_spann.y < filuren.global_position.y:
+	# Player is above the y range
+		posmod_y += 1
+		negativt_spann.y += 32*32
+		positivt_spann.y += 32*32
+		world_gen(32,32)
+	#"""
 	update()
 	
-	_world_destruction(45,25)
+	#_world_destruction(45,25)
 func init_pre_existing_level_characters() -> void:
 	# init all the character scenes in the scene tree when starting the level
 	# other characters created in create_character() will be initilized at that time
@@ -104,14 +165,11 @@ func world_gen(width: int, height: int) -> void:
 	#to do : fixa så att det bara genar en värld mellan ett visst spann.
 	
 	
-	negativt_spann = Vector2(-32+ 32* posmod_x,-32 + 32 * posmod_y)
-	
-	positivt_spann = Vector2(32 +32 * posmod_x,32 + 32  * posmod_y)
+
 	
 	
-	
-	var start_x = int(negativt_spann.x)
-	var start_y = int(negativt_spann.y)
+	var start_x = int(negativt_spann.x/32)
+	var start_y = int(negativt_spann.y/32)
 	for x in range(start_x, start_x + width):
 		for y in range(start_y, start_y + height):
 			if Vector2(x,y) in current_tiles:

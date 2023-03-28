@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://scener/Filuren.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scripts/day_night.gd" type="Script" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://scripts/värld_för_navigation.gd" type="Script" id=8]
 [ext_resource path="res://scener/fiender.tscn" type="PackedScene" id=9]
 [ext_resource path="res://scener/bunny.tscn" type="PackedScene" id=10]
+[ext_resource path="res://scener/markör.tscn" type="PackedScene" id=11]
 
 [sub_resource type="NavigationPolygon" id=5]
 vertices = PoolVector2Array( 32, 32, 0, 32, 0, 0, 32, 0 )
@@ -176,6 +177,10 @@ position = Vector2( -266, 83 )
 
 [node name="bunny2" parent="." instance=ExtResource( 10 )]
 position = Vector2( -243, 103 )
+
+[node name="negspann" parent="." instance=ExtResource( 11 )]
+
+[node name="posspann" parent="." instance=ExtResource( 11 )]
 
 [connection signal="damaged" from="Filuren" to="HUD" method="_on_Filuren_damaged"]
 [connection signal="died" from="Filuren" to="." method="_on_Filuren_died"]

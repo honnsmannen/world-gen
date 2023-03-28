@@ -1,0 +1,4 @@
+[gd_scene format=2]
+
+[node name="markör" type="Polygon2D"]
+polygon = PoolVector2Array( -4, -12, 9, -8, 8, 7, -2, 12, -13, 0 )
