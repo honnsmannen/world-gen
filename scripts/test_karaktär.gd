@@ -36,6 +36,9 @@ var character_nav_path : Array = []
 var character_real_nav_path : Array = []
 
 func _ready() -> void:
+	
+	$VisibilityNotifier2D.connect("screen_entered", self, "show")
+	$VisibilityNotifier2D.connect("screen_exited", self, "hide")
 	# init velocity
 	# Vector2.ZERO is enumeration for Vector2(0,0)
 	

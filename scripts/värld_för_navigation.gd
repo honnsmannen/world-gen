@@ -1,13 +1,28 @@
 extends Node2D
 
 
-var negativt_spann : Vector2
+var negativt_spann = Vector2(0,0)
 
-var positivt_spann : Vector2
+var positivt_spann = Vector2(1024,1024)
 
 var posmod_x = 0
 
 var posmod_y = 0
+
+var width_function = 32
+var height_function = 32
+var spanis = 32*32
+
+#fyll i array sakerna
+var y_array1 = []
+var	y_array2 = []
+var	y_array3 = []
+var	y_array4 = []
+var	y_array5 = []
+
+var array_x = [y_array1,y_array2,y_array3,y_array4,y_array5]
+
+
 
 var cell_x = -1
 var cell_y = -1
@@ -32,7 +47,7 @@ onready var parent_level_scene = ("res://scener/värld_för_navigation.tscn")
 onready var filuren = $Filuren
 
 onready var game_over = preload("res://scener/Game_Over.tscn")
-
+onready var marker = preload("res://scener/marker.tscn")
 
 var characters = []
 
@@ -44,7 +59,7 @@ onready var tile = get_node("TileMap")
 func _ready() -> void:
 	level_navigation_map = get_world_2d().get_navigation_map()
 	init_pre_existing_level_characters()
-	world_gen(32, 32)
+	#world_gen(width_function, height_function)
 	
 	
 	"""
@@ -62,90 +77,27 @@ func _ready() -> void:
 	
 	tree_noise.octaves = 100
 	
-	
-
-
 func _process(delta: float) -> void:
 	$negspann.global_position = negativt_spann
 	$posspann.global_position = positivt_spann
-	"""
-	if negativt_spann.x * 32 < filuren.global_position.x and filuren.global_position.x < positivt_spann.x * 32:
-		pass
-	elif negativt_spann.y * 32 < filuren.global_position.y and filuren.global_position.y < positivt_spann.y * 32:
+	#"""
+	if negativt_spann.x  < filuren.global_position.x and filuren.global_position.x < positivt_spann.x:
+		# Player is within x range, do nothing
 		pass
 	else:
-		if negativt_spann.x  * 32>  filuren.global_position.x:
-			posmod_x = posmod_x -1
-			negativt_spann = Vector2(-32+ 32* posmod_x,-32 + 32 * posmod_y)
-	
-			positivt_spann = Vector2(32 +32 * posmod_x,32 + 32  * posmod_y)
-	
-			world_gen(32, 32)
-		else:	
-			pass
-		if positivt_spann.x * 32 < filuren.global_position.x:
-			
-			posmod_x = posmod_x + 1
-			negativt_spann = Vector2(-32+ 32* posmod_x,-32 + 32 * posmod_y)
-	
-			positivt_spann = Vector2(32 +32 * posmod_x,32 + 32  * posmod_y)
-	
-			world_gen(32, 32)
-		else:
-			pass
-			
-		if negativt_spann.y * 32 > filuren.global_position.y:
-			posmod_y = posmod_y -1
-			negativt_spann = Vector2(-32+ 32* posmod_x,-32 + 32 * posmod_y)
-	
-			positivt_spann = Vector2(32 +32 * posmod_x,32 + 32  * posmod_y)
-	
-			world_gen(32, 32)
-		else:	
-			pass
-		if positivt_spann.y * 32 < filuren.global_position.y:
-			posmod_y = posmod_y + 1
-			negativt_spann = Vector2(-32+ 32* posmod_x,-32 + 32 * posmod_y)
-	
-			positivt_spann = Vector2(32 +32 * posmod_x,32 + 32  * posmod_y)
-		
-			world_gen(32, 32)
-		else:
-			pass
-	"""
-	if negativt_spann.x  < filuren.global_position.x and filuren.global_position.x < positivt_spann.x:
-	# Player is within x range, do nothing
-		pass
-	elif negativt_spann.x > filuren.global_position.x:
-		# Player is to the left of the x range
-	  posmod_x -= 1
-	  negativt_spann.x -= 32*32
-	  positivt_spann.x -= 32*32
-	  world_gen(32,32)
-	elif positivt_spann.x  < filuren.global_position.x:
-	   # Player is to the right of the x range
-		posmod_x += 1
-		negativt_spann.x += 32*32
-		positivt_spann.x += 32*32
-		world_gen(32,32)
+		_the_shitter_check()
 
 	if negativt_spann.y < filuren.global_position.y and filuren.global_position.y < positivt_spann.y:
-		
-			  # Player is within y range, do nothing
 		pass
-	elif negativt_spann.y > filuren.global_position.y:
-	  # Player is below the y range
-		posmod_y -= 1
-		negativt_spann.y -= 32*32
-		positivt_spann.y -= 32*32
-		world_gen(32,32)
-	elif positivt_spann.y < filuren.global_position.y:
-	# Player is above the y range
-		posmod_y += 1
-		negativt_spann.y += 32*32
-		positivt_spann.y += 32*32
-		world_gen(32,32)
-	#"""
+	else:
+		_the_shitter_check()
+
+	
+	if Input.is_action_just_pressed("activate"):
+		world_gen_destruction()
+	
+#"""
+	
 	update()
 	
 	#_world_destruction(45,25)
@@ -161,21 +113,22 @@ func init_pre_existing_level_characters() -> void:
 				child_node.init_character(self, false)
 				characters.push_back(child_node)
 
-func world_gen(width: int, height: int) -> void:
+func world_gen(width: int, height: int, start_xy :Vector2) -> void:
 	#to do : fixa så att det bara genar en värld mellan ett visst spann.
 	
+	var start_x = int(start_xy.x/32)
+	var start_y = int(start_xy.y/32)
 	
 
-	
-	
-	var start_x = int(negativt_spann.x/32)
-	var start_y = int(negativt_spann.y/32)
 	for x in range(start_x, start_x + width):
 		for y in range(start_y, start_y + height):
-			if Vector2(x,y) in current_tiles:
-				generating = false
+			
+			if  -1 != $TileMap.get_cellv(Vector2(x,y)):
+				return
 			
 			# Generate world data at (x, y)
+			#if 1 != 1:
+			#	pass
 			else:
 				var noise_x = x
 				var noise_y = y
@@ -202,29 +155,16 @@ func world_gen(width: int, height: int) -> void:
 					
 				
 				$TileMap.set_cell(x, y, int(compenserat_value))
-				current_tiles.append(Vector2(x,y))
-				if current_tiles.size() > width * height:
-					
-					_distance_from_2020(current_tiles, width, height)
-					
-				#print("generating")
-				generating = true
-				#fixa så att den tar bort den tile som är längst bort från splearen
 
 
-func _world_destruction(width , height) -> void:
-	var center = filuren.global_position
-	var start_x = int(center.x / 32) - width/2
-	var start_y = int(center.y / 32) - height/2
+
+func _world_destruction(width , height , start_XY) -> void:
+	
+	var start_x = int(start_XY.x/32)
+	var start_y = int(start_XY.y/32)
 	for x in range(start_x, start_x + width):
 		for y in range(start_y, start_y + height):
-			
-			
-			if Vector2(x,y) in current_tiles:
-				pass
-			else:
-				$TileMap.set_cell(x, y, -1)
-				not_cleared = true
+			$TileMap.set_cell(x, y, -1)
 
 func _distance_from_2020(input_array : Array,x : int, y : int) -> void:
 	var array_to_compare = input_array 
@@ -235,8 +175,102 @@ func _distance_from_2020(input_array : Array,x : int, y : int) -> void:
 			if compared_array.x > 15 or compared_array.x < -15 or compared_array.y > 15 or compared_array.y < -15:
 				current_tiles.erase(array_to_compare[i-1])
 		not_cleared = false
+func world_gen_destruction() -> void:
 
+	var marker_position = Vector2(-32*32*2,-32*32*2)
+	var mark_mod_x = posmod_x
+	var mark_mod_y = posmod_y
+	for x in range(5):
+		mark_mod_y = posmod_y
+		marker_position.y = -32*32*2
+		marker_position.x = -32*32*2 + 32*32*mark_mod_x
+		mark_mod_x += 1
+		for y in range(5):
+			var marker_instance = marker.instance()
+			marker_position.y =-32*32*2 + 32*32*mark_mod_y
+			mark_mod_y += 1
+			if x > 0 and x < 4 and y > 0 and y < 4:
+				world_gen(width_function,height_function,marker_position)
+			else:
+				_world_destruction(width_function,height_function,marker_position)
+			array_x[x].append(marker_position)
+			marker_instance.global_position = marker_position
+			add_child(marker_instance)
+		#print("array_x",array_x[x])
+		
+	
 
 
 func _on_Filuren_died() -> void:
 	add_child(game_over.instance())
+
+func _worldgen_square() -> void:
+	for x in range(5):
+		print(x,"x")
+		for y in range(5):
+			print(y,"y")
+			if x > 0 and x < 4 and y > 0 and y < 4:
+				array_x[x].append("ett")
+				
+			else:
+				array_x[x].append("noll")
+		print(array_x[x])
+		
+		
+		
+func _the_shitter_check() -> void:
+	if negativt_spann.x > filuren.global_position.x:
+		# Player is to the left of the x range
+		#print("negativt_spann.x: ",negativt_spann.x)
+		#print("spanis: ", spanis)
+		#print("filuren.global_position.x: ",filuren.global_position.x)
+		posmod_x -= 1
+		positivt_spann.x -= spanis
+		negativt_spann.x -= spanis
+		
+		print("posmod_x: ", posmod_x)
+		#  world_gen(width_function,height_function)
+		world_gen_destruction()
+	else:
+		pass
+	if positivt_spann.x < filuren.global_position.x:
+		# Player is to the right of the x range
+		print("pos_spann.x: ",positivt_spann.x)
+		print("spanis: ", spanis)
+		print("filuren.global_position.x: ",filuren.global_position.x)
+		posmod_x += 1
+		negativt_spann.x += spanis
+		positivt_spann.x += spanis
+		
+		print("posmod_x: ", posmod_x)
+		#world_gen(width_function,height_function)
+		world_gen_destruction()
+	else:
+		pass
+	if negativt_spann.y > filuren.global_position.y:
+		# Player is below the y range
+		#print("negativt_spann.y: ",negativt_spann.y)
+		#print("spanis: ", spanis)
+		#print("filuren.global_position.y: ",filuren.global_position.y)
+		posmod_y -= 1
+		negativt_spann.y -= spanis
+		positivt_spann.y -= spanis
+		
+		print("posmod_y: ", posmod_y)
+		#world_gen(width_function,height_function)
+		world_gen_destruction()
+	else:
+		pass
+	if positivt_spann.y < filuren.global_position.y:
+		# Player is above the y range
+		#print("pos_spann.y: ",positivt_spann.y)
+		#print("spanis: ", spanis)
+		#print("filuren.global_position.y: ", filuren.global_position.y)
+		posmod_y += 1
+		negativt_spann.y += spanis
+		positivt_spann.y += spanis
+		world_gen_destruction()
+		print("posmod_y: ", posmod_y)
+		#world_gen(width_function,height_function)
+	else:
+		pass

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scener/marker.gd" type="Script" id=1]
+
+[node name="marker" type="Polygon2D"]
+position = Vector2( 5.96046e-08, 5.96046e-08 )
+scale = Vector2( 1.33333, 1.33333 )
+polygon = PoolVector2Array( 0, 3, 3, 0, 0, -3, -3, 0 )
+script = ExtResource( 1 )
